@@ -1,9 +1,13 @@
 'use client';
 
 import * as Dialog from '@radix-ui/react-dialog';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
-const InfixCalculator = () => {
+interface calcProps {
+    callback: Function;
+}
+
+const BEDMASCalculator: React.FC<calcProps> = ({ callback }) => {
 
     // States to manage different values in the calculator
     const [expression, setExpression] = useState<string>('');
@@ -23,6 +27,9 @@ const InfixCalculator = () => {
             setInput('');
             setResult('');
         }
+
+        // Log the press
+        callback('BEDMAS', op);
     }
 
     // Function to handle number input from buttons
@@ -34,6 +41,9 @@ const InfixCalculator = () => {
             setResult('');
             setExpression('');
         }
+
+        // Log the press
+        callback('BEDMAS', num);
     }
 
     const save = () => {
@@ -43,6 +53,9 @@ const InfixCalculator = () => {
 
         setMsg('Value saved to memory.');
         const delay = setTimeout(() => { setMsg('') }, 1500);
+
+        // Log the press
+        callback('BEDMAS', 'M');
     }
 
     // Load the stored value from memory
@@ -57,6 +70,9 @@ const InfixCalculator = () => {
 
         setMsg('Value loaded from memory.');
         const delay = setTimeout(() => { setMsg('') }, 1500);
+
+        // Log the press
+        callback('BEDMAS', 'MR');
     }
 
     // Reset the calculator
@@ -65,6 +81,9 @@ const InfixCalculator = () => {
         setExpression('');
         setResult('');
         setMsg('');
+
+        // Log the press
+        callback('BEDMAS', 'AC');
     }
 
     // Function to handle calculation
@@ -80,6 +99,9 @@ const InfixCalculator = () => {
             setMsg('Please enter a valid expression.');
             const delay = setTimeout(() => { setMsg('') }, 1500);
         }
+
+        // Log the press
+        callback('BEDMAS', '=');
     };
 
     return (
@@ -226,12 +248,10 @@ const InfixCalculator = () => {
                             </button>
                         </div>
                     </div>
-
-
                 </Dialog.Content>
             </Dialog.Portal>
         </Dialog.Root>
     );
 };
 
-export default InfixCalculator;
+export default BEDMASCalculator;

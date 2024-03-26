@@ -1,7 +1,7 @@
 'use client';
 
 import * as Dialog from '@radix-ui/react-dialog';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 enum states {
     initial,
@@ -11,7 +11,11 @@ enum states {
     result
 }
 
-const RPNCalculator = () => {
+interface calcProps {
+    callback: Function;
+}
+
+const RPNCalculator: React.FC<calcProps> = ({ callback }) => {
 
     // States to manage different values in the calculator
     const [state, setState] = useState<states>(states.initial);
@@ -46,6 +50,9 @@ const RPNCalculator = () => {
                 console.log(`stack: ${[...stack, parseFloat(ans)]}`);
             }
         }
+
+        // Log the press
+        callback('RPN', op);
     }
 
     // Function to handle number input from buttons
@@ -62,6 +69,9 @@ const RPNCalculator = () => {
         } else {
             setInput(input + num);
         }
+
+        // Log the press
+        callback('RPN', num);
     }
 
     const save = () => {
@@ -75,6 +85,9 @@ const RPNCalculator = () => {
             setMsg('Value saved to memory.');
             const delay = setTimeout(() => { setMsg('') }, 1500);
         }
+
+        // Log the press
+        callback('RPN', 'M');
     }
 
     // Load the stored value from memory
@@ -92,6 +105,9 @@ const RPNCalculator = () => {
 
         setMsg('Value loaded from memory.');
         const delay = setTimeout(() => { setMsg('') }, 1500);
+
+        // Log the press
+        callback('RPN', 'MR');
     }
 
     // Function to push to stack
@@ -106,6 +122,9 @@ const RPNCalculator = () => {
             setStack([...stack, parseFloat(result)]);
             setState(states.populated2);
         }
+
+        // Log the press
+        callback('RPN', 'ENTER');
     }
 
     // Reset the calculator
@@ -116,6 +135,9 @@ const RPNCalculator = () => {
         setOperator('');
         setResult('');
         setMsg('');
+
+        // Log the press
+        callback('RPN', 'AC');
     }
 
     // Function to handle calculation

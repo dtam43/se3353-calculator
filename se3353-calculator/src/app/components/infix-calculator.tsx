@@ -1,9 +1,13 @@
 'use client';
 
 import * as Dialog from '@radix-ui/react-dialog';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
-const InfixCalculator = () => {
+interface calcProps {
+    callback: Function;
+}
+
+const InfixCalculator: React.FC<calcProps> = ({ callback }) => {
 
     // States to manage different values in the calculator
     const [operand1, setOperand1] = useState<number>();
@@ -13,30 +17,6 @@ const InfixCalculator = () => {
     const [compute, setCompute] = useState<boolean>(false);
     const [storedValue, setStoredValue] = useState<string>('');
     const [msg, setMsg] = useState<string>('');
-
-    // Listen for keypresses for calculator input
-    useEffect(() => {
-        // Attach event listener to window instead of dialogElement
-        window.addEventListener('keydown', handleKeyDown);
-
-        // Remove listener when component unmounts
-        return () => {
-            reset();
-            window.removeEventListener('keydown', handleKeyDown);
-        };
-    }, []);
-
-    // Function to handle keypresses as input
-    const handleKeyDown = (event: KeyboardEvent) => {
-        if (event.key >= '0' && event.key <= '9') {
-            setInput(prevInput => prevInput + event.key);
-        }
-        if (event.key === '+') opPressed('+');
-        if (event.key === '-') opPressed('-');
-        if (event.key === 'x') opPressed('x');
-        if (event.key === '/') opPressed('/');
-        if (event.key === 'Enter' || event.key === '=') calculate();
-    };
 
     // Function to handle operator input from buttons
     const opPressed = (op: string) => {
@@ -57,6 +37,9 @@ const InfixCalculator = () => {
         // Allow the calculation to continue
         setOperator(op);
         setCompute(false);
+
+        // Log the press
+        callback('Infix', op);
     }
 
     // Function to handle number input from buttons
@@ -68,6 +51,9 @@ const InfixCalculator = () => {
             setOperand1(undefined);
             setCompute(false);
         }
+
+        // Log the press
+        callback('Infix', num);
     }
 
     const save = () => {
@@ -77,6 +63,9 @@ const InfixCalculator = () => {
 
         setMsg('Value saved to memory.');
         const delay = setTimeout(() => { setMsg('') }, 1500);
+
+        // Log the press
+        callback('Infix', 'M');
     }
 
     // Load the stored value from memory
@@ -88,6 +77,9 @@ const InfixCalculator = () => {
 
         setMsg('Value loaded from memory.');
         const delay = setTimeout(() => { setMsg('') }, 1500);
+
+        // Log the press
+        callback('Infix', 'MR');
     }
 
     // Reset the calculator
@@ -98,6 +90,9 @@ const InfixCalculator = () => {
         setResult('');
         setCompute(false);
         setMsg('');
+
+        // Log the press
+        callback('Infix', 'AC');
     }
 
     // Function to handle calculation
@@ -289,7 +284,7 @@ const InfixCalculator = () => {
                         <div className="col-span-1">
                         </div>
                         <div className="col-span-1">
-                            <button className="w-full aspect-content rounded-sm" aria-label="Close" onClick={() => calculate()}>
+                            <button className="w-full aspect-content rounded-sm" aria-label="Close" onClick={() => { calculate(); callback('Infix', '='); }}>
                                 <h1 className="aspect-content">=</h1>
                             </button>
                         </div>
