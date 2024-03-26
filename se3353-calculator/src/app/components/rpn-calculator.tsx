@@ -35,6 +35,7 @@ const RPNCalculator = () => {
             setState(states.result);
 
         } else if (state == states.result) {
+            stack.push(parseFloat(result));
             if (stack.length > 1) {
                 console.log(`stack: ${stack}`);
                 const operand1 = stack.pop();
@@ -84,6 +85,9 @@ const RPNCalculator = () => {
             setState(states.empty);
         } else if (state == states.populated1 || state == states.result) {
             setState(states.populated2);
+            if (state == states.result) {
+                setStack([...stack, parseFloat(result)]);
+            }
         }
 
         setMsg('Value loaded from memory.');
